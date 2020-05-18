@@ -96,6 +96,9 @@
     <ClInclude Include="Temperature.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Humidity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.c">
@@ -129,6 +132,9 @@
       <Filter>FreeRTOS Source\Source</Filter>
     </ClCompile>
     <ClCompile Include="Temperature.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Humidity.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

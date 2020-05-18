@@ -3,7 +3,7 @@
 
 temp_t temperature_create()
 {
-	temp_t _temp = malloc(sizeof(temp_t));
+	temp_t _temp = calloc(1, sizeof(temp_t));
 
 	if (_temp == NULL)
 	{

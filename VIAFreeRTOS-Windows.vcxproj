@@ -39,6 +39,7 @@
     <ClInclude Include="..\..\..\Desktop\Uni\Semester 4\FreeRTOSv10.3.1\FreeRTOS\Source\include\timers.h" />
     <ClInclude Include="..\..\..\Desktop\Uni\Semester 4\FreeRTOSv10.3.1\FreeRTOS\Source\portable\MSVC-MingW\portmacro.h" />
     <ClInclude Include="FreeRTOSConfig.h" />
+    <ClInclude Include="Humidity.h" />
     <ClInclude Include="Temperature.h" />
   </ItemGroup>
   <ItemGroup>
@@ -51,6 +52,7 @@
     <ClCompile Include="..\..\..\Desktop\Uni\Semester 4\FreeRTOSv10.3.1\FreeRTOS\Source\stream_buffer.c" />
     <ClCompile Include="..\..\..\Desktop\Uni\Semester 4\FreeRTOSv10.3.1\FreeRTOS\Source\tasks.c" />
     <ClCompile Include="..\..\..\Desktop\Uni\Semester 4\FreeRTOSv10.3.1\FreeRTOS\Source\timers.c" />
+    <ClCompile Include="Humidity.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="Temperature.c" />
   </ItemGroup>
