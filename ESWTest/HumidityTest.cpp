@@ -8,7 +8,7 @@ extern "C" {
 
 class HumidityTest : public ::testing::Test {
 protected:
-    hum_t hum;
+    hum_t hum = NULL;
 
     void SetUp() override {
         hum = humidity_create();

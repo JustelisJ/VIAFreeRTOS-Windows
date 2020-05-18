@@ -99,6 +99,12 @@
     <ClInclude Include="Humidity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SensorBundle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DataPacket.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.c">
@@ -135,6 +141,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Humidity.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SensorBundle.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DataPacket.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
