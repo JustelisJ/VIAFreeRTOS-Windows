@@ -4,8 +4,6 @@ extern "C" {
 #include <Temperature.h>
 }
 
-
-
 class TemperatureTest : public ::testing::Test {
 protected:
     temp_t temp;
@@ -34,7 +32,7 @@ TEST_F(TemperatureTest, TemperatureMeasure) {
 }
 
 TEST_F(TemperatureTest, TemperatureGet) {
-    int value = -100;
+    uint8_t value = -100;
     value = temperature_get(temp);
-    ASSERT_NE(value, -100);
+    ASSERT_TRUE(value >= -50 && value <= 50);
 }

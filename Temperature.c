@@ -42,6 +42,7 @@ static int getRandomValue()
 	int number = rand() % 50;
 
 	if (positive == 0)
-		number *= -1;
+		number = number * -1;
+
 	return number;
 }
