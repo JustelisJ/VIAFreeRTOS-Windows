@@ -16,11 +16,10 @@ hum_t humidity_create()
 
 void humidity_destroy(hum_t self)
 {
-	if (self != NULL)
+	if (self->lastValues != NULL)
 	{
 		free(self);
 	}
-	self = NULL;
 }
 
 void humidity_measure(hum_t self)

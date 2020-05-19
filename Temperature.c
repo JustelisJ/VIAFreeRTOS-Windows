@@ -17,11 +17,10 @@ temp_t temperature_create()
 
 void temperature_destroy(temp_t self)
 {
-	if (self != NULL)
+	if (self->lastValues != NULL)
 	{
 		free(self);
 	}
-	self = NULL;
 }
 
 void temperature_measure(temp_t self)

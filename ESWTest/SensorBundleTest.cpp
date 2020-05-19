@@ -8,19 +8,13 @@ extern "C" {
 
 class SensorBundleTest : public ::testing::Test {
 protected:
-    temp_t temp = NULL;
-    hum_t hum = NULL;
     bundle_t bundle = NULL;
 
     void SetUp() override {
-        temp = temperature_create();
-        hum = humidity_create();
-        bundle = SensorBundle_create(temp, hum);
+        bundle = SensorBundle_create(temperature_create(), humidity_create());
     }
 
     void TearDown() override {
-        temperature_destroy(temp);
-        humidity_destroy(hum);
         if (bundle != NULL)
         {
             SensorBundle_destroy(bundle);
@@ -29,7 +23,6 @@ protected:
 };
 
 TEST_F(SensorBundleTest, BundleCreate) {
-
     ASSERT_NE(bundle, nullptr);
 }
 

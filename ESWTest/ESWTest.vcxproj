@@ -36,6 +36,7 @@
     <IncludePath>C:\Users\Justinas\Documents\GitHub\VIAFreeRTOS-Windows;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemGroup>
+    <ClCompile Include="..\DataPacket.c" />
     <ClCompile Include="..\Humidity.c" />
     <ClCompile Include="..\SensorBundle.c" />
     <ClCompile Include="..\Temperature.c" />

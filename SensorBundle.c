@@ -3,7 +3,7 @@
 
 bundle_t SensorBundle_create(temp_t temp, hum_t hum)
 {
-	bundle_t bundle = calloc(1, sizeof(bundle_t));
+	bundle_t bundle = malloc(sizeof(bundle_t));
 	if (bundle == NULL)
 		return NULL;
 

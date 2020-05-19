@@ -13,6 +13,8 @@ protected:
     }
 
     void TearDown() override {
+        if (temp != NULL)
+            temperature_destroy(temp);
     }
 };
 
@@ -22,8 +24,7 @@ TEST_F(TemperatureTest, TemperatureCreate) {
 
 TEST_F(TemperatureTest, TemperatureDestroy) {
     temperature_destroy(temp);
-    //ASSERT_TRUE(temp == NULL);
-    ASSERT_NE(temp, nullptr);
+    ASSERT_EQ(temp->lastValues, NULL);
 }
 
 TEST_F(TemperatureTest, TemperatureMeasure) {

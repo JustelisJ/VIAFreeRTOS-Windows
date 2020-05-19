@@ -9,23 +9,22 @@ extern "C" {
 class HumidityTest : public ::testing::Test {
 protected:
     hum_t hum = NULL;
-
     void SetUp() override {
-        hum = humidity_create();
+         hum = humidity_create();
     }
 
     void TearDown() override {
+        humidity_destroy(hum);
     }
 };
 
-TEST_F(HumidityTest, HumidityCreate) {
+TEST_F(HumidityTest, HumidityCreate) {    
     ASSERT_NE(hum, nullptr);
 }
 
 TEST_F(HumidityTest, HumidityDestroy) {
     humidity_destroy(hum);
-    //ASSERT_TRUE(temp == NULL);
-    ASSERT_NE(hum, nullptr);
+    ASSERT_EQ(hum->lastValues, NULL);
 }
 
 TEST_F(HumidityTest, HumidityMeasure) {
