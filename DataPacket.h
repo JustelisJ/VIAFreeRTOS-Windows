@@ -10,8 +10,8 @@ typedef struct DataPacket
 typedef struct DataPacket* packet_t;
 
 
-packet_t DataPacket_create(uint8_t temp, uint8_t hum);
-void DataPacket_destoy(packet_t self);
-
-uint8_t DataPacket_getTemp(packet_t self);
-uint8_t DataPacket_getHum(packet_t self);
+packet_t dataPacket_create(uint8_t temp, uint8_t hum);
+void dataPacket_destoy(packet_t* self);
+uint8_t dataPacket_getTemp(packet_t self);
+uint8_t dataPacket_getHum(packet_t self);
+char* dataPacket_toString(packet_t self);

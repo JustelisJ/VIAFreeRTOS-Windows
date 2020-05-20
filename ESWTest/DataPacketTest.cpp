@@ -9,11 +9,11 @@ protected:
     packet_t packet;
 
     void SetUp() override {
-        packet = DataPacket_create(15, 50);
+        packet = dataPacket_create(15, 50);
     }
 
     void TearDown() override {
-        DataPacket_destoy(packet);
+        dataPacket_destoy(&packet);
     }
 };
 
@@ -22,15 +22,14 @@ TEST_F(DataPacketTest, DataPacketCreate) {
 }
 
 TEST_F(DataPacketTest, DataPacketDestroy) {
-    DataPacket_destoy(packet);
-    ASSERT_EQ(packet->hum, 221);
-    ASSERT_EQ(packet->temp, 221);
+    dataPacket_destoy(&packet);
+    ASSERT_EQ(packet, nullptr);
 }
 
 TEST_F(DataPacketTest, DataPacketGetTemperature) {
-    ASSERT_EQ(DataPacket_getTemp(packet), 15);
+    ASSERT_EQ(dataPacket_getTemp(packet), 15);
 }
 
 TEST_F(DataPacketTest, DataPacketGetHumidity) {
-    ASSERT_EQ(DataPacket_getHum(packet), 50);
+    ASSERT_EQ(dataPacket_getHum(packet), 50);
 }

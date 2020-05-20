@@ -2,7 +2,7 @@
 
 hum_t humidity_create()
 {
-	hum_t _temp = calloc(1, sizeof(hum_t));
+	hum_t _temp = calloc(1, sizeof(Humidity));
 
 	if (_temp == NULL)
 	{
@@ -14,11 +14,14 @@ hum_t humidity_create()
 	return _temp;
 }
 
-void humidity_destroy(hum_t self)
+void humidity_destroy(hum_t* self)
 {
-	if (self->lastValues != NULL)
+	hum_t _self = *self;
+	if (_self != NULL)
 	{
-		free(self);
+		free(_self);
+		_self = NULL;
+		*self = _self;
 	}
 }
 

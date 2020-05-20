@@ -14,7 +14,7 @@ protected:
     }
 
     void TearDown() override {
-        humidity_destroy(hum);
+        humidity_destroy(&hum);
     }
 };
 
@@ -23,8 +23,8 @@ TEST_F(HumidityTest, HumidityCreate) {
 }
 
 TEST_F(HumidityTest, HumidityDestroy) {
-    humidity_destroy(hum);
-    ASSERT_EQ(hum->lastValues, NULL);
+    humidity_destroy(&hum);
+    ASSERT_EQ(hum, nullptr);
 }
 
 TEST_F(HumidityTest, HumidityMeasure) {

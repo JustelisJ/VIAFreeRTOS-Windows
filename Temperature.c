@@ -3,7 +3,7 @@
 
 temp_t temperature_create()
 {
-	temp_t _temp = calloc(1, sizeof(temp_t));
+	temp_t _temp = calloc(1, sizeof(Temperature));
 
 	if (_temp == NULL)
 	{
@@ -15,11 +15,14 @@ temp_t temperature_create()
 	return _temp;
 }
 
-void temperature_destroy(temp_t self)
+void temperature_destroy(temp_t* self)
 {
-	if (self->lastValues != NULL)
+	temp_t _self = *self;
+	if (_self != NULL)
 	{
-		free(self);
+		free(_self);
+		_self = NULL;
+		*self = _self;
 	}
 }
 

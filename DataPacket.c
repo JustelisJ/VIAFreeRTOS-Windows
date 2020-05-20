@@ -1,9 +1,10 @@
 #include <stdlib.h>
 #include "DataPacket.h"
+#include <stdio.h>
 
-packet_t DataPacket_create(uint8_t temp, uint8_t hum)
+packet_t dataPacket_create(uint8_t temp, uint8_t hum)
 {
-	packet_t packet = calloc(1, sizeof(packet_t));
+	packet_t packet = calloc(1, sizeof(DataPacket));
 
 	if (packet == NULL)
 		return NULL;
@@ -13,22 +14,30 @@ packet_t DataPacket_create(uint8_t temp, uint8_t hum)
 	return packet;
 }
 
-void DataPacket_destoy(packet_t self)
+void dataPacket_destoy(packet_t* self)
 {
-	if (self->hum != 221 && self->temp != 221)
+	packet_t _self = *self;
+	if (_self != NULL)
 	{
-		self->hum = NULL;
-		self->temp = NULL;
-		free(self);
+		free(_self);
+		_self = NULL;
+		*self = _self;
 	}
 }
 
-uint8_t DataPacket_getTemp(packet_t self)
+uint8_t dataPacket_getTemp(packet_t self)
 {
 	return self->temp;
 }
 
-uint8_t DataPacket_getHum(packet_t self)
+uint8_t dataPacket_getHum(packet_t self)
 {
 	return self->hum;
+}
+
+char* dataPacket_toString(packet_t self)
+{
+	char string[100] = {'\0'};
+	sprintf_s(string, sizeof(string), "Temperature: %d \tHumidity: %d", self->temp, self->hum);
+	return string;
 }

@@ -1,9 +1,9 @@
 #include <stdlib.h>
 #include "SensorBundle.h"
 
-bundle_t SensorBundle_create(temp_t temp, hum_t hum)
+bundle_t sensorBundle_create(temp_t temp, hum_t hum)
 {
-	bundle_t bundle = malloc(sizeof(bundle_t));
+	bundle_t bundle = malloc(sizeof(SensorBundle));
 	if (bundle == NULL)
 		return NULL;
 
@@ -13,21 +13,27 @@ bundle_t SensorBundle_create(temp_t temp, hum_t hum)
 	return bundle;
 }
 
-void SensorBundle_destroy(bundle_t self)
+void sensorBundle_destroy(bundle_t* self)
 {
-	if (self != NULL)
+	bundle_t _self = *self;
+	if (_self != NULL)
 	{
-		free(self);
+		hum_t hum = _self->hum;
+		temp_t temp = _self->temp;
+		humidity_destroy(&hum);
+		temperature_destroy(&temp);
+		free(_self);
+		_self = NULL;
+		*self = _self;
 	}
-	self = NULL;
 }
 
-temp_t SensorBundle_getTemp(bundle_t self)
+temp_t sensorBundle_getTemp(bundle_t self)
 {
 	return self->temp;
 }
 
-hum_t SensorBundle_getHum(bundle_t self)
+hum_t sensorBundle_getHum(bundle_t self)
 {
 	return self->hum;
 }
