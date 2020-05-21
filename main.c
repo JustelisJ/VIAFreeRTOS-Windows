@@ -4,7 +4,7 @@
 #include "Temperature.h"
 #include "Humidity.h"
 #include "DataPacket.h"
-#include "SensorBundle.h"
+#include "SensorPacket.h"
 #include "event_groups.h"
 #include <semphr.h>
 #include <message_buffer.h>
@@ -34,20 +34,23 @@ EventGroupHandle_t xEventGroup;
 SemaphoreHandle_t Mutex_Printf;
 
 /*Buffer declaration*/
-MessageBufferHandle_t xMessageBuffer;
-QueueHandle_t xQueue;
-
+QueueHandle_t xQueueLora;
+QueueHandle_t xQueueSensors;
 
 // --------------------------------------------------------------------------------------
 void taskTemperature(void* pvParameters)
 {
 	temp_t temp = pvParameters;
+	sensorPacket_t packet;
 
 	for (;;)
 	{
 		temperature_measure(temp);
+		packet = sensorPacket_create('T', temperature_get(temp));
+		xQueueSend(xQueueSensors, &packet, portMAX_DELAY);
 		xEventGroupSetBits(xEventGroup, BIT_0);
 		//printf("Temperature: %d\n", temperature_get(temp));
+		vTaskDelay(500);
 	}
 }
 
@@ -55,28 +58,30 @@ void taskTemperature(void* pvParameters)
 void taskHumidity(void* pvParameters)
 {
 	hum_t hum = pvParameters;
+	sensorPacket_t packet;
 
 	for (;;)
 	{
 		humidity_measure(hum);
+		packet = sensorPacket_create('H', humidity_get(hum));
+		xQueueSend(xQueueSensors, &packet, portMAX_DELAY);
 		xEventGroupSetBits(xEventGroup, BIT_1);
 		//printf("Humidity: %d\n", humidity_get(hum));
+		vTaskDelay(500);
 	}
 }
 
 // --------------------------------------------------------------------------------------
 void taskController(void* pvParameters)
 {
-	bundle_t bundle = pvParameters;
-
 	vTaskSuspend(_taskHumidityHandle);
 	vTaskSuspend(_taskTemperatureHandle);
 
 	for (;;)
 	{
-		xSemaphoreTake(Mutex_Printf, portMAX_DELAY);
+		/*xSemaphoreTake(Mutex_Printf, portMAX_DELAY);
 		printf("Controller\n");
-		xSemaphoreGive(Mutex_Printf);
+		xSemaphoreGive(Mutex_Printf);*/
 
 		vTaskResume(_taskHumidityHandle);
 		vTaskResume(_taskTemperatureHandle);
@@ -85,43 +90,76 @@ void taskController(void* pvParameters)
 			BIT_0 | BIT_1, /* The bits to wait for. */
 			pdTRUE, /* BIT_0 & BIT_1 cleared before return*/
 			pdTRUE, /* Wait for bits to be set */
-			2000); /* Time out*/
+			3000); /* Time out*/
 
 		vTaskSuspend(_taskHumidityHandle);
 		vTaskSuspend(_taskTemperatureHandle);
 
-		if (uxBits == 3)	//0b11 uxBits value
+		if ((uxBits & (BIT_0 | BIT_1)) == (BIT_0 | BIT_1))	//0b11 uxBits value
 		{
 			xSemaphoreTake(Mutex_Printf, portMAX_DELAY);
-			printf("Sensor data retrieved\n");
+			printf("Sensor data retrieved");
 			xSemaphoreGive(Mutex_Printf);
 
-			packet_t packet = dataPacket_create(temperature_get(bundle->temp), humidity_get(bundle->hum));
-			xQueueSend(xQueue, &packet, portMAX_DELAY);
+			sensorPacket_t sPacket;
+			uint8_t temp = 0;
+			uint8_t hum = 0;
+
+			int i = 0;
+			while (i != 2)
+			{
+				BaseType_t em = xQueueReceive(xQueueSensors, &sPacket, 0);
+				if (em == pdTRUE)
+				{
+					if (sPacket->sensor == 'T')
+					{
+						temp = sPacket->data;
+					}
+					else
+					{
+						hum = sPacket->data;
+					}
+				}
+				else
+				{
+					i--;
+				}
+				i++;
+			}
+
+			packet_t dataPacket = dataPacket_create(temp, hum);
+			xQueueSend(xQueueLora, &dataPacket, portMAX_DELAY);
+			xSemaphoreTake(Mutex_Printf, portMAX_DELAY);
+			printf("\tSensor data sent to Lora\n");
+			xSemaphoreGive(Mutex_Printf);
 		}
-		else if (uxBits == 2)	//0b10 uxBits value
+		else if ((uxBits & BIT_1) == BIT_1)	//0b10 uxBits value
 		{
 			xSemaphoreTake(Mutex_Printf, portMAX_DELAY);
 			printf("Temperature not retrieved\n");
 			xSemaphoreGive(Mutex_Printf);
+			xQueueReset(xQueueSensors);
 		}
-		else if (uxBits == 1)	//0b01 uxBits
+		else if ((uxBits & BIT_0) == BIT_0)	//0b01 uxBits
 		{
 			xSemaphoreTake(Mutex_Printf, portMAX_DELAY);
 			printf("Humidity not retrieved\n");
 			xSemaphoreGive(Mutex_Printf);
+			xQueueReset(xQueueSensors);
 		}
 		else if(uxBits == 0)
 		{
 			xSemaphoreTake(Mutex_Printf, portMAX_DELAY);
 			printf("Both sensors failed to set the bits\n");	//0b00 uxBits value
 			xSemaphoreGive(Mutex_Printf);
+			xQueueReset(xQueueSensors);
 		}
 		else
 		{
 			xSemaphoreTake(Mutex_Printf, portMAX_DELAY);
 			printf("Something went wrong. EventGroup unexpected bits set.\n");
 			xSemaphoreGive(Mutex_Printf);
+			xQueueReset(xQueueSensors);
 		}
 		
 		vTaskDelay(1000);
@@ -131,12 +169,10 @@ void taskController(void* pvParameters)
 // --------------------------------------------------------------------------------------
 void taskLoraDriver(void* pvParameters)
 {
-	size_t receivedBytes;
-	char string[102] = "\0";
 	packet_t packet = NULL;
 	for (;;)
 	{
-		BaseType_t em = xQueueReceive(xQueue, &packet, 0);
+		BaseType_t em = xQueueReceive(xQueueLora, &packet, 0);
 
 		if (em == pdTRUE)
 		{
@@ -152,7 +188,6 @@ void main(void)
 {
 	temp_t temp = temperature_create();
 	hum_t hum = humidity_create();
-	bundle_t bundle = sensorBundle_create(temp, hum);
 
 	/* Create the task. */
 	xTaskCreate(
@@ -176,7 +211,7 @@ void main(void)
 		taskController,       /* Function that implements the task. */
 		"ControllerTask",          /* Text name for the task. */
 		TASK_CONTROLLER_STACK,      /* Stack size in words, not bytes. */
-		bundle,    /* Parameter passed into the task. */
+		NULL,    /* Parameter passed into the task. */
 		TASK_CONTROLLER_PRIORITY,/* Priority at which the task is created. */
 		NULL);      /* Used to pass out the created task's handle. */
 
@@ -190,8 +225,8 @@ void main(void)
 
 	xEventGroup = xEventGroupCreate();
 
-	xMessageBuffer = xMessageBufferCreate(100);
-	xQueue = xQueueCreate(10, sizeof(packet_t));
+	xQueueLora = xQueueCreate(10, sizeof(packet_t));
+	xQueueSensors = xQueueCreate(10, sizeof(sensorPacket_t));
 
 	Mutex_Printf = xSemaphoreCreateMutex();
 

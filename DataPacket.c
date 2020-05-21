@@ -34,10 +34,3 @@ uint8_t dataPacket_getHum(packet_t self)
 {
 	return self->hum;
 }
-
-char* dataPacket_toString(packet_t self)
-{
-	char string[100] = {'\0'};
-	sprintf_s(string, sizeof(string), "Temperature: %d \tHumidity: %d", self->temp, self->hum);
-	return string;
-}

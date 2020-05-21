@@ -38,11 +38,11 @@
   <ItemGroup>
     <ClCompile Include="..\DataPacket.c" />
     <ClCompile Include="..\Humidity.c" />
-    <ClCompile Include="..\SensorBundle.c" />
+    <ClCompile Include="..\SensorPacket.c" />
     <ClCompile Include="..\Temperature.c" />
     <ClCompile Include="DataPacketTest.cpp" />
     <ClCompile Include="HumidityTest.cpp" />
-    <ClCompile Include="SensorBundleTest.cpp" />
+    <ClCompile Include="SensorPacketTest.cpp" />
     <ClCompile Include="TemperatureTest.cpp" />
   </ItemGroup>
   <ItemGroup>

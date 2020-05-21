@@ -41,7 +41,7 @@
     <ClInclude Include="DataPacket.h" />
     <ClInclude Include="FreeRTOSConfig.h" />
     <ClInclude Include="Humidity.h" />
-    <ClInclude Include="SensorBundle.h" />
+    <ClInclude Include="SensorPacket.h" />
     <ClInclude Include="Temperature.h" />
   </ItemGroup>
   <ItemGroup>
@@ -57,7 +57,7 @@
     <ClCompile Include="DataPacket.c" />
     <ClCompile Include="Humidity.c" />
     <ClCompile Include="main.c" />
-    <ClCompile Include="SensorBundle.c" />
+    <ClCompile Include="SensorPacket.c" />
     <ClCompile Include="Temperature.c" />
   </ItemGroup>
   <ItemGroup>
